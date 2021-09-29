@@ -1,5 +1,5 @@
 import json
-from .models import Question
+from .models import Question, Electeur
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from django.forms.models import model_to_dict
@@ -45,6 +45,10 @@ def newQuestion(request):
     dict_obj = model_to_dict(q)
     serialized = json.dumps(dict_obj, cls=DjangoJSONEncoder)
     q.save()
-
     return HttpResponse(serialized)
+
+def infoElecteur(request):
+    electeur = Electeur(id_electeur=request.GET.get("id", 1), token=333333)
+    electeur.save()
+    return HttpResponse(333333)
 
