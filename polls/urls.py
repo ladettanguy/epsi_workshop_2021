@@ -29,5 +29,4 @@ urlpatterns = [
     path('specifics/<int:question_id>/', views.detail, name='detail'),
     path('nouveau/', views.newQuestion, name='newQuestion'),
     path('login/', views.login, name='login'),
-    path('https://fake-fc.herokuapp.com/api/', views.infoElecteur, name='infoElecteur')
 ]

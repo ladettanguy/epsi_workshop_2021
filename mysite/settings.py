@@ -124,3 +124,11 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_COOKIE_SECURE = True
+
+EMAIL_BACKEND = 'Django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_USE_TLS = True
+EMAIL_Host = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_Host_USER = 'sti2Dlab.ladettanguy@gmail.com'
+EMAIL_Host_PASSWORD = 'azerty84000'
