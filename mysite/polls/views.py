@@ -1,11 +1,11 @@
-from django.http import HttpResponse,HttpRequest, Http404
+import json
 from .models import Question
+from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from django.forms.models import model_to_dict
-from django.template import loader
 from django.utils import timezone
-import json
 from django.core.serializers.json import DjangoJSONEncoder
+from django.views.decorators.csrf import csrf_exempt
 
 
 def detail(request, question_id):
@@ -19,6 +19,15 @@ def detail(request, question_id):
 def results(request, question_id):
     response = "You're looking at the results of question %s."
     return HttpResponse(response % question_id)
+
+
+@csrf_exempt
+def login(request):
+    if request.method == 'POST':
+        q = request.POST['id']
+        dict_obj = {'mabite': q}
+        serialized = json.dumps(dict_obj, cls=DjangoJSONEncoder)
+        return HttpResponse(serialized, content_type='application/json')
 
 
 def vote(request, question_id):
