@@ -5,7 +5,7 @@ from django.utils import timezone
 
 
 class Electeur(models.Model):
-    id_electeur = models.IntegerField(default=0)
+    id_electeur = models.CharField(max_length=200)
     token = models.CharField(max_length=10)
 
 
