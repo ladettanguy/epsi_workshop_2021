@@ -19,11 +19,8 @@ class Candidat(models.Model):
 
 
 class Block(models.Model):
-    id_block = models.IntegerField(default=0)
     hashPrecedent = models.CharField(max_length=100)
     actuel = models.CharField(max_length=100)
-    hashSuivant = models.CharField(max_length=100)
-
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)

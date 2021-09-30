@@ -96,8 +96,12 @@ def getCandidat(request):
 def getVote(request):
     if request.method == 'POST':
         id_electeur = request.POST['id_electeur']
-        if id_electeur not in Electeur.objects.all():
-            id_candidat = request.POST['id_candidat']
-            addBlock(id_candidat)
-            e = Electeur(id_electeur)
+        electeur = Electeur.objects.get(id=id_electeur)
+        electeur.a_vote = True
+        electeur.save()
+        id_candidat = request.POST['id_candidat']
+        addBlock(id_candidat)
 
+
+def addBlock(id):
+    return None
