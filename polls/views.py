@@ -101,12 +101,13 @@ def getVote(request):
         electeur.save()
         id_candidat = request.POST['id_candidat']
         addBlock(id_candidat)
+        return {"succes": True}
 
 
 def addBlock(id):
-    lastBlock = Block.objects.latest('actuel')
-    if(lastBlock is not None):
-        hashPrecedent = hash(lastBlock)
-        lastBlock[id] += 1
+    lastBlock = json.load(Block.objects.latest('actuel'))
+    hashPrecedent = hash(lastBlock)
+    lastBlock[id] += 1
 
-        block = Block(hashPrecedent=hashPrecedent, actuel=lastBlock)
+    block = Block(hashPrecedent=hashPrecedent, actuel=lastBlock)
+    block.save()
