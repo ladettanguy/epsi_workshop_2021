@@ -49,6 +49,21 @@ def login(request):
             raise Http404()
 
 
+def auth(request):
+    if request.method == 'POST':
+        id_electeur = request.POST['token']
+        token = request.POST['auth']
+        electeur = Electeur.objects.filter(id_electeur=id_electeur)
+        if electeur.token == token:
+            dict_obj = {'success': True}
+            serialized = json.dumps(dict_obj, cls=DjangoJSONEncoder)
+            return HttpResponse(serialized)
+        else:
+            return Http404()
+    else:
+        return Http404()
+
+
 def index(request):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
     context = {'latest_question_list': latest_question_list}
@@ -62,15 +77,14 @@ def newQuestion(request):
     q.save()
     return HttpResponse(serialized)
 
+
 def infoElecteur(request):
     electeur = Electeur(id_electeur=request.GET.get("id", 1), token=333333)
     electeur.save()
     return HttpResponse(333333)
 
+
 def getCandidat(request):
     listeCandidat = Candidat.objects.all()
     jsonCandidat = json.dumps(listeCandidat)
     return HttpResponse(jsonCandidat)
-
-
-
