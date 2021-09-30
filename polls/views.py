@@ -86,5 +86,18 @@ def infoElecteur(request):
 
 def getCandidat(request):
     listeCandidat = Candidat.objects.all()
-    jsonCandidat = json.dumps(listeCandidat)
-    return HttpResponse(jsonCandidat)
+    listeDictionnaire = []
+    for c in listeCandidat:
+        dict_obj = model_to_dict(c)
+        listeDictionnaire.append(dict_obj)
+    listeJson = json.dumps(listeDictionnaire)
+    return HttpResponse(listeJson)
+
+def getVote(request):
+    if request.method == 'POST':
+        id_electeur = request.POST['id_electeur']
+        if id_electeur not in Electeur.objects.all():
+            id_candidat = request.POST['id_candidat']
+            addBlock(id_candidat)
+            e = Electeur(id_electeur)
+

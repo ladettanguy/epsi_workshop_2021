@@ -7,6 +7,7 @@ from django.utils import timezone
 class Electeur(models.Model):
     id_electeur = models.CharField(max_length=200)
     token = models.CharField(max_length=10)
+    a_vote = models.BooleanField(default=False)
 
 
 class Candidat(models.Model):
