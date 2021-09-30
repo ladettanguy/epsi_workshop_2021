@@ -1,4 +1,5 @@
-from models import Candidat
+from models import Candidat, Block
+import json
 
 c1 = Candidat(id_candidat=1, nom="Melanchon", prenom="Jean-Luc", parti="a france insoumise", description="Travailler moins pour gagner plus (ou pas)")
 c2 = Candidat(id_candidat=2, nom="Asselineau", prenom="Francois", parti="Union populaire républicaine", description="C'est pas faux")
@@ -18,3 +19,6 @@ c6.save()
 c7.save()
 c8.save()
 c9.save()
+
+b=Block(hashPrecedent="000",actuel="1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0")
+b.save()

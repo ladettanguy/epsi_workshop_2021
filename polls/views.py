@@ -1,6 +1,6 @@
 import json
 from random import random
-from .models import Question, Electeur, Candidat
+from .models import Question, Electeur, Candidat, Block
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from django.forms.models import model_to_dict
@@ -104,4 +104,9 @@ def getVote(request):
 
 
 def addBlock(id):
-    return None
+    lastBlock = Block.objects.latest('actuel')
+    if(lastBlock is not None):
+        hashPrecedent = hash(lastBlock)
+        lastBlock[id] += 1
+
+        block = Block(hashPrecedent=hashPrecedent, actuel=lastBlock)

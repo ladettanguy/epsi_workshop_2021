@@ -2,7 +2,7 @@
 import datetime
 from django.db import models
 from django.utils import timezone
-
+from jsonfield import JSONField
 
 class Electeur(models.Model):
     id_electeur = models.CharField(max_length=200)
