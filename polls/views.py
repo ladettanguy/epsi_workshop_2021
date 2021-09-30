@@ -1,10 +1,8 @@
 import json
 from random import random
-from .models import Question, Electeur, Candidat, Block
+from .models import Electeur, Candidat, Block
 from django.http import HttpResponse, Http404
-from django.shortcuts import render
 from django.forms.models import model_to_dict
-from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import EmailMessage
@@ -38,8 +36,15 @@ def login(request):
             email.send()
 
             # création de l'electeur
-            new_electeur = Electeur(id_electeur=user['id'], token=token)
-            new_electeur.save()
+            Qs = Electeur.objects.filter(id_electeur=id_electeur)
+            if len(Qs) == 1:
+                electeur = Qs[0]
+                electeur.token = token
+            elif len(Qs) == 0:
+                new_electeur = Electeur(id_electeur=user['id'], token=token)
+                new_electeur.save()
+            else:
+                raise Exception()
 
             # Réponse
             dict_obj = {'token': user['id']}
@@ -53,7 +58,11 @@ def auth(request):
     if request.method == 'POST':
         id_electeur = request.POST['token']
         token = request.POST['auth']
-        electeur = Electeur.objects.filter(id_electeur=id_electeur)
+        Qs = Electeur.objects.filter(id_electeur=id_electeur)
+        if len(Qs) != 1:
+            electeur = Qs[0]
+        else:
+            raise Exception()
         if electeur.token == token:
             dict_obj = {'success': True}
             serialized = json.dumps(dict_obj, cls=DjangoJSONEncoder)
@@ -62,26 +71,6 @@ def auth(request):
             return Http404()
     else:
         return Http404()
-
-
-def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
-    context = {'latest_question_list': latest_question_list}
-    return render(request, './index.html', context)
-
-
-def newQuestion(request):
-    q = Question(question_text=request.GET.get("texte", 'default'), pub_date=timezone.now())
-    dict_obj = model_to_dict(q)
-    serialized = json.dumps(dict_obj, cls=DjangoJSONEncoder)
-    q.save()
-    return HttpResponse(serialized)
-
-
-def infoElecteur(request):
-    electeur = Electeur(id_electeur=request.GET.get("id", 1), token=333333)
-    electeur.save()
-    return HttpResponse(333333)
 
 
 def getCandidat(request):
@@ -93,15 +82,18 @@ def getCandidat(request):
     listeJson = json.dumps(listeDictionnaire)
     return HttpResponse(listeJson)
 
+
 def getVote(request):
     if request.method == 'POST':
-        id_electeur = request.POST['id_electeur']
+        id_electeur = request.POST['token']
         electeur = Electeur.objects.get(id=id_electeur)
         electeur.a_vote = True
         electeur.save()
-        id_candidat = request.POST['id_candidat']
+        id_candidat = request.POST['candidat']
         addBlock(id_candidat)
-        return {"succes": True}
+        dict_obj = {'success': True}
+        serialized = json.dumps(dict_obj, cls=DjangoJSONEncoder)
+        return HttpResponse(serialized)
 
 
 def addBlock(id):

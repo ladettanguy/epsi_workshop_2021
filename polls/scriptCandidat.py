@@ -1,5 +1,4 @@
 from models import Candidat, Block
-import json
 
 c1 = Candidat(id_candidat=1, nom="Melanchon", prenom="Jean-Luc", parti="a france insoumise", description="Travailler moins pour gagner plus (ou pas)")
 c2 = Candidat(id_candidat=2, nom="Asselineau", prenom="Francois", parti="Union populaire républicaine", description="C'est pas faux")
