@@ -67,3 +67,10 @@ def infoElecteur(request):
     electeur.save()
     return HttpResponse(333333)
 
+def getCandidat(request):
+    listeCandidat = Candidat.objects.all()
+    jsonCandidat = json.dumps(listeCandidat)
+    return HttpResponse(jsonCandidat)
+
+
+
