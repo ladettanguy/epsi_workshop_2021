@@ -1,5 +1,9 @@
+import hashlib
 import json
 from random import random
+
+from django.core.exceptions import BadRequest
+
 from .models import Electeur, Candidat, Block
 from django.http import HttpResponse, Http404
 from django.forms.models import model_to_dict
@@ -36,7 +40,7 @@ def login(request):
             email.send()
 
             # création de l'electeur
-            Qs = Electeur.objects.filter(id_electeur=id_electeur)
+            Qs = Electeur.objects.filter(id_electeur=user['id'])
             if len(Qs) == 1:
                 electeur = Qs[0]
                 electeur.token = token
@@ -59,7 +63,7 @@ def auth(request):
         id_electeur = request.POST['token']
         token = request.POST['auth']
         Qs = Electeur.objects.filter(id_electeur=id_electeur)
-        if len(Qs) != 1:
+        if len(Qs) == 1:
             electeur = Qs[0]
         else:
             raise Exception()
@@ -86,7 +90,14 @@ def getCandidat(request):
 def getVote(request):
     if request.method == 'POST':
         id_electeur = request.POST['token']
-        electeur = Electeur.objects.get(id=id_electeur)
+        Qs = Electeur.objects.filter(id_electeur=id_electeur)
+        if len(Qs) == 1:
+            electeur = Qs[0]
+        else:
+            raise Exception()
+        if electeur.a_vote:
+            raise BadRequest()
+
         electeur.a_vote = True
         electeur.save()
         id_candidat = request.POST['candidat']
@@ -97,9 +108,11 @@ def getVote(request):
 
 
 def addBlock(id):
-    lastBlock = json.load(Block.objects.latest('actuel'))
-    hashPrecedent = hash(lastBlock)
+    last_bloc_str = Block.objects.latest('id').actuel
+    lastBlock = eval(last_bloc_str)
+    hashPrecedent = hash(last_bloc_str)
     lastBlock[id] += 1
 
-    block = Block(hashPrecedent=hashPrecedent, actuel=lastBlock)
+    my_dict_str = str(lastBlock)
+    block = Block(hashPrecedent=hashPrecedent, actuel=my_dict_str)
     block.save()
