@@ -11,3 +11,4 @@ PyYAML~=5.3.1
 setuptools~=45.2.0
 requests~=2.22.0
 django-cors-headers~=3.9.0
+whitenoise~=5.3.0
